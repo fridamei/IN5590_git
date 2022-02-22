@@ -1,14 +1,5 @@
-%{ 
-fid = fopen('filNavn.gcode', 'w', 'n','UTF-8');
-% Ren tekst ut   
-fprintf(fid, '%s\n', '# !File ; generated at 22.09.2021 - 21:31');
-% Lager en string som inneholder verdien til en variabel omsluttet av tekst
-val = 22.3;
-stringUt = ['noe tekst ' num2str(val) 'enda mer tekst'];
-fprintf(fid, '%s\n', stringUt);
-fclose(fid);
-%}
-
+fid = fopen('cube.gcode', 'w', 'n','UTF-8');
+fwrite(fid, fileread('startfil.gcode'));
 
 startPoint = "G0 F6000 X107.5 Y107.5 Z0.2";
 
@@ -43,10 +34,9 @@ nLines = round(boxBreadth/lineWidth); % The
 toRight = 1; % Defines if the line is printed from left to right or vice versa
 
 
-
-fid = fopen('cube.gcode', 'w', 'n','UTF-8');
 g0_start = ['G0 F6000 X' num2str(startX) ' Y' num2str(startY) ' Z' num2str(startZ)];
-fprintf(fid, '%s\n');
+
+fprintf(fid, '%s\n', g0_start);
 
 % For every layer
 for i = 1:nLayers
@@ -54,12 +44,14 @@ for i = 1:nLayers
     %tkst = [';LAYER:' num2str(i) '\n;TYPE:SKIN']
     %g0_layer = ['G0 F6000 Z' num2str(z)];
     
-    g0_layer = [';LAYER:' num2str(i) newline ';TYPE:SKIN' newline 'G0 F6000 Z' num2str(z)];
+    y = startY;
+    
+    g0_layer = [';LAYER:' num2str(i) newline ';TYPE:SKIN' newline 'G0 F6000 Y' num2str(y) ' Z' num2str(z)];
     fprintf(fid, '%s\n', g0_layer);    
     
     %toRight = 1; Hvis x-verdien skal resettes, må denne det også
     %x = startX;
-    y = startY;
+    %y = startY;
     
  
    % For every line
@@ -71,7 +63,6 @@ for i = 1:nLayers
         eTotal = eTotal + eLine;
         
         g1_out = ['G1 F600 X' num2str(x) ' E' num2str(eTotal)];
-        
         
         % G0-kommando:
         y = y + lineWidth;
@@ -89,5 +80,7 @@ for i = 1:nLayers
     % Increment z to make next layer
     z = z + layerHeight;
 end
+
+fwrite(fid, fileread('endefil.gcode'));
 
 fclose(fid);
