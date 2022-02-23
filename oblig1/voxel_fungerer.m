@@ -10,13 +10,13 @@ fwrite(fid, fileread('header.gcode'));
 
 % Box dimensions
 boxHeight = 10; % mm
-boxBreadth = 20; % mm, defined by number of lines (y-direction)
-boxLength = 20; % mm, equals the length of every printed line (x-direction)
+boxBreadth = 15; % mm, defined by number of lines (y-direction)
+boxLength = 15; % mm, equals the length of every printed line (x-direction)
 % dimension of box is then boxBreadth x boxLength x boxHeigth
 
 % Print dimensions (find optimal values by testing)
 layerHeight = 0.3; % mm Defines the size to increment z-axis with https://the3dprinterbee.com/3d-printing-layer-height-vs-nozzle-size/ 
-lineWidth = 0.2; % mm. The distance between two lines in the same layer
+lineWidth = 0.3; % mm. The distance between two lines in the same layer
 eRate = 0.033; % extrusion per mm 
 
 % Start coordinates(center of plate is center of cube)
@@ -138,7 +138,7 @@ eStr = ['E' num2str(e)];
 
 % Regex to change the original value to new value. 
 lines = readlines('footer.gcode');
-lines{5} = regexprep(lines{5}, 'E\d+\.\d+', eStr); % Change 'E40.67428' from original footer to new E-value
+lines{5} = regexprep(lines{5}, 'E\d+\.\d+', eStr); % Change current E-value from footer to new E-value
 
 % Open new file
 [fid, msg] = fopen('footer.gcode', 'w');
